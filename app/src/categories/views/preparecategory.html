@@ -1,0 +1,13 @@
+<md-card>
+    <md-list>
+        <md-list-item ng-repeat="entry in ctrl.itemsWithStatus">
+            <md-checkbox ng-model="entry.status"></md-checkbox>
+            <div class="md-list-item-text" layout="column">
+                <h3>{{ entry.item.name }}</h3>
+            </div>
+            <md-button class="md-fab md-mini">
+                <md-icon md-svg-src="img/icons/ic_people_24px.svg"></md-icon>
+            </md-button>
+        </md-list-item>
+    </md-list>
+</md-card>

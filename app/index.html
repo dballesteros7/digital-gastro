@@ -1,93 +1,145 @@
 <!DOCTYPE html>
-<html lang="en" >
-  <head>
-    <title>Angular Material - Starter App</title>
+<html lang="en">
+<head>
+    <title>DiGa</title>
 
+    <link rel="icon" href="/assets/img/favicon.ico">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="msapplication-TileColor" content="#ff5722">
+    <meta name="msapplication-TileImage" content="/mstile-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no"/>
 
-    <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link rel="manifest" href="manifest.json">
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,400italic'>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./bower_components/normalize.css/normalize.css"/>
     <link rel="stylesheet" href="./bower_components/angular-material/angular-material.css"/>
     <link rel="stylesheet" href="assets/app.css"/>
-  </head>
+</head>
 
-  <body ng-app="starterApp" layout="row" ng-controller="UserController as ul">
+<body ng-cloak ng-app="diga" layout="row" ng-controller="MainController as mc">
 
-  <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
-                md-component-id="left"
-                md-is-locked-open="$mdMedia('gt-sm')">
-
-    <md-toolbar class="md-whiteframe-z1">
-      <h1>Users</h1>
+<md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2" md-component-id="left"
+    md-is-locked-open="$mdMedia('gt-md')" md-is-open="mc.isSidenavOpen">
+    <md-toolbar class="md-whiteframe-z1 top" layout-padding>
+        <h1 class="md-title">May we take your order?</h1>
     </md-toolbar>
-
     <md-list>
-      <md-list-item ng-repeat="it in ul.users">
-          <md-button ng-click="ul.selectUser(it)" ng-class="{'selected' : it === ul.selected }">
-            <md-icon md-svg-icon="{{it.avatar}}" class="avatar"></md-icon>
-            {{it.name}}
-          </md-button>
-      </md-list-item>
+        <md-list-item>
+            <h3 class="md-subhead">Options</h3>
+        </md-list-item>
+        <md-list-item>
+           <md-switch ng-model="mc.notificationControl" ng-change="mc.notificationControlChanged()" ng-disabled="mc.isNotificationControlDisabled()">{{mc.getNotificationsControlText()}}</md-switch>
+        </md-list-item>
+        <md-divider></md-divider>
+        <md-list-item>
+            <h3 class="md-subhead">Our specials</h3>
+        </md-list-item>
+        <md-list-item ng-repeat="option in mc.sidenavOptions">
+            <md-button ui-sref="{{option.state}}">
+                <md-icon class="md-primary">{{option.icon}}</md-icon>
+                {{option.displayName}}
+            </md-button>
+        </md-list-item>
+        <md-divider></md-divider>
+        <md-list-item>
+            <h3 class="md-subhead">About</h3>
+        </md-list-item>
+        <md-list-item ng-repeat="option in mc.aboutOptions">
+            <md-button ng-href="{{option.url}}">
+                <md-icon class="md-accent">{{option.icon}}</md-icon>
+                {{option.displayName}}
+            </md-button>
+        </md-list-item>
     </md-list>
+</md-sidenav>
 
-  </md-sidenav>
 
-
-  <div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
-
-    <md-toolbar layout="row" class="md-whiteframe-z1">
-      <md-button class="menu" hide-gt-sm ng-click="ul.toggleList()" aria-label="Show User List">
-        <md-icon md-svg-icon="menu" ></md-icon>
-      </md-button>
-      <h1>Angular Material - Starter App</h1>
-    </md-toolbar>
-
-    <md-content flex id="content">
-        <md-icon md-svg-icon="{{ul.selected.avatar}}" class="avatar"></md-icon>
-        <h2>{{ul.selected.name}}</h2>
-        <p>{{ul.selected.content}}</p>
-
-        <md-button class="contact" md-no-ink ng-click="ul.showContactOptions($event)" aria-label="Contact User">
-          <md-tooltip>Contact {{ ul.selected.name }}</md-tooltip>
-          <md-icon md-svg-icon="share"></md-icon>
+<div flex layout="column" tabIndex="-1" role="main" class="md-whiteframe-z2">
+    <md-toolbar layout="row" layout-align="center center" class="md-whiteframe-z1 top" layout-sm="column" layout-padding>
+        <md-button hide-gt-md ng-click="mc.toggleSidenav()">
+            <md-icon>menu</md-icon>
         </md-button>
-      </md-content>
+        <h1 class="main-logo"></h1>
+        <md-menu style="margin: 0; padding: 0" ng-hide="mc.getCurrentUser()">
+            <md-button ng-click="$mdOpenMenu($event)" class="md-icon-button">
+                <md-tooltip>Login</md-tooltip>
+                <md-icon>face</md-icon>
+            </md-button>
+            <md-menu-content>
+                <md-menu-item>
+                    <md-button ng-click="mc.authWithFacebook()">
+                        Login with Facebook
+                    </md-button>
+                </md-menu-item>
+                <md-menu-item>
+                    <md-button ng-click="mc.authWithGoogle()">
+                        Login with Google
+                    </md-button>
+                </md-menu-item>
+            </md-menu-content>
+        </md-menu>
+        <div layout="row">
+            <img ng-show="mc.getCurrentUser()" alt="mc.getCurrentUser().name" ng-src="{{ mc.getCurrentUser().profileImgSrc }}"
+                 class="main-avatar"/>
+            <md-button ng-show="mc.getCurrentUser()" ng-click="mc.signOut()">
+                Sign out
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-content id="content">
+        <div ui-view>
+        </div>
+    </md-content>
+</div>
 
-  </div>
+<script src="./bower_components/angular/angular.js"></script>
+<script src="./bower_components/angular-animate/angular-animate.js"></script>
+<script src="./bower_components/angular-aria/angular-aria.js"></script>
+<script src="./bower_components/angular-material/angular-material.js"></script>
+<script src="./bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="./bower_components/momentjs/moment.js"></script>
+<script src="https://cdn.firebase.com/js/client/2.2.4/firebase.js"></script>
+<script src="https://cdn.firebase.com/libs/angularfire/1.1.2/angularfire.min.js"></script>
 
-    <script src="./bower_components/angular/angular.js"></script>
-    <script src="./bower_components/angular-animate/angular-animate.js"></script>
-    <script src="./bower_components/angular-aria/angular-aria.js"></script>
-    <script type="text/javascript" src="./bower_components/angular-material/angular-material.js"></script>
+<script type="text/javascript">
+    window.diga = window.diga || {};
+</script>
 
-    <script src="./src/users/Users.js"></script>
-    <script src="./src/users/UserController.js"></script>
-    <script src="./src/users/UserService.js"></script>
+<script type="text/javascript">
+    angular
+            .module('diga', ['ngMaterial', 'ui.router', 'users', 'firebase'])
+            .config(function ($mdThemingProvider, $mdIconProvider) {
+                $mdThemingProvider.theme('default')
+                        .primaryPalette('deep-orange')
+                        .accentPalette('deep-purple')
+                        .warnPalette('purple')
+                        .backgroundPalette('grey');
+                $mdIconProvider.fontSet('fa', 'fontawesome');
+            });
 
-    <script type="text/javascript">
+</script>
+<script src="./src/states.js"></script>
+<script src="./src/firebase.js"></script>
+<script src="./src/notifications.js"></script>
 
-          angular
-              .module('starterApp', ['ngMaterial', 'users'])
-              .config(function($mdThemingProvider, $mdIconProvider){
 
-                  $mdIconProvider
-                      .defaultIconSet("./assets/svg/avatars.svg", 128)
-                      .icon("menu"       , "./assets/svg/menu.svg"        , 24)
-                      .icon("share"      , "./assets/svg/share.svg"       , 24)
-                      .icon("google_plus", "./assets/svg/google_plus.svg" , 512)
-                      .icon("hangouts"   , "./assets/svg/hangouts.svg"    , 512)
-                      .icon("twitter"    , "./assets/svg/twitter.svg"     , 512)
-                      .icon("phone"      , "./assets/svg/phone.svg"       , 512);
-
-                      $mdThemingProvider.theme('default')
-                          .primaryPalette('brown')
-                          .accentPalette('red');
-
-              });
-
-    </script>
-
-  </body>
+<script src="./src/mainpage/MainController.js"></script>
+<script src="./src/users/Users.js"></script>
+<script src="./src/users/UserSelectController.js"></script>
+<script src="./src/users/UserService.js"></script>
+<script src="./src/items/Items.js"></script>
+<script src="./src/categories/Categories.js"></script>
+<script src="./src/categories/CategoryService.js"></script>
+<script src="./src/categories/PrepareCategoryController.js"></script>
+<script src="./src/plans/Plans.js"></script>
+<script src="./src/plans/NewPlanController.js"></script>
+<script src="./src/plans/PlanListController.js"></script>
+<script src="./src/plans/PublishedPlanController.js"></script>
+<script src="./src/plans/ItemFilter.js"></script>
+</body>
 </html>

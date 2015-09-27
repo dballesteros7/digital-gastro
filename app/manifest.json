@@ -1,0 +1,13 @@
+{
+  "name": "Digital Gastro",
+  "short_name": "Diga",
+  "icons": [{
+    "src": "/assets/svg/DIGA-icon-l.svg",
+    "sizes": "192x192",
+    "type": "image/svg"
+  }],
+  "start_url": "/index.html",
+  "display": "standalone",
+  "gcm_sender_id": "176777998746",
+  "gcm_user_visible_only": true
+}

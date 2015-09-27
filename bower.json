@@ -9,7 +9,10 @@
     "angular": "^1.4.x",
     "angular-animate": "^1.4.x",
     "angular-aria": "^1.4.x",
-    "angular-material": "^0.9.0"
+    "angular-material": "^0.9.0",
+    "angular-ui-router": "~0.2.15",
+    "normalize.css": "~3.0.3",
+    "momentjs": "~2.10.6"
   },
   "devDependencies": {
     "angular-material": "https://github.com/angular/bower-material.git#master"

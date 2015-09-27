@@ -1,0 +1,28 @@
+<md-input-container>
+    <label>Month</label>
+    <md-select ng-model="ctrl.selectedMonth" md-on-close="ctrl.prepareDatesArray()">
+        <md-option ng-value="opt" ng-repeat="opt in ctrl.months">{{ opt }}</md-option>
+    </md-select>
+</md-input-container>
+<md-grid-list md-cols="7" md-row-height-gt-md="1:1" md-gutter="8px">
+    <md-grid-tile style="background: gray" md-rowspan="1" md-colspan="1"
+        ng-repeat="day in ctrl.dates">
+        {{day.date.toDate() | date: 'mediumDate'}}
+        <md-grid-tile-footer>
+            <div layout="row" layout-align="center center">
+                <md-button class="md-icon-button md-warn">
+                    <md-tooltip>Edit plan</md-tooltip>
+                    <md-icon>edit</md-icon>
+                </md-button>
+                <md-button class="md-icon-button">
+                    <md-tooltip>View plan</md-tooltip>
+                    <md-icon>visibility</md-icon>
+                </md-button>
+                <md-button class="md-icon-button">
+                    <md-tooltip>Delete plan</md-tooltip>
+                    <md-icon>delete</md-icon>
+                </md-button>
+            </div>
+        </md-grid-tile-footer>
+    </md-grid-tile>
+</md-grid-list>

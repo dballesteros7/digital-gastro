@@ -1,0 +1,44 @@
+<div layout="column" layout-align="center">
+    <div layout="row" layout-align="start center">
+        <h4 class="md-title" flex>
+            To Do List
+            <p class="md-caption">
+                For {{ctrl.plan.date | date:'mediumDate'}}
+            </p>
+        </h4>
+        <md-switch ng-model="ctrl.personalView">
+            <span class="md-caption">Show my items only</span>
+        </md-switch>
+        <md-button class="md-icon-button" ng-click="ctrl.expandAll()">
+            <md-tooltip>
+                Expand all
+            </md-tooltip>
+            <md-icon>expand_more</md-icon>
+        </md-button>
+        <md-button class="md-icon-button" ng-click="ctrl.hideAll()">
+            <md-tooltip>
+                Hide all
+            </md-tooltip>
+            <md-icon>expand_less</md-icon>
+        </md-button>
+    </div>
+    <div ng-repeat="categoryView in ctrl.mutablePlan.categoryViews">
+        <md-toolbar class="md-whiteframe-z2">
+            <div class="md-toolbar-tools">
+                <h2 class="md-title">{{categoryView.category.displayName}}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="ctrl.toggleCategory(categoryView)">
+                    <md-icon>{{categoryView.expandIcon}}</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-list class="md-whiteframe-z1" ng-show="categoryView.isOpen">
+            <md-list-item ng-repeat="item in categoryView.category.items | assignedItems | byUser:ctrl.getCurrentUser():ctrl.personalView">
+                <img ng-show="item.assignee" alt="{{ item.assignee.name }}"
+                     ng-src="{{ item.assignee.profileImgSrc }}" class="md-avatar"/>
+                <p>{{ item.displayName }}</p>
+                <md-checkbox ng-change="ctrl.update()" ng-model="item.done"></md-checkbox>
+            </md-list-item>
+        </md-list>
+    </div>
+</div>

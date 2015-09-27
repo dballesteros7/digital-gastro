@@ -1,0 +1,60 @@
+<div layout="column" layout-align="center">
+    <div>
+        <div layout="row" layout-align="start center">
+            <h2 class="md-title" flex>
+                Prepare To-Do List
+            </h2>
+            <div>
+                <md-button class="md-accent" ng-click="ctrl.savePlan()">
+                    <md-icon>save</md-icon>
+                    Save
+                </md-button>
+                <md-button class="md-primary" ng-click="ctrl.publishPlan()">
+                    <md-icon>publish</md-icon>
+                    Publish
+                </md-button>
+            </div>
+        </div>
+        <div layout="row" layout-align="start center" layout-sm="column">
+            <p class="md-title" flex>
+                <md-datepicker ng-model="ctrl.mutablePlan.date" md-placeholder="Enter date"></md-datepicker>
+            </p>
+            <div layout="row">
+                <md-button class="md-icon-button" ng-click="ctrl.expandAll()">
+                    <md-tooltip>
+                        Expand all
+                    </md-tooltip>
+                    <md-icon>expand_more</md-icon>
+                </md-button>
+                <md-button class="md-icon-button" ng-click="ctrl.hideAll()">
+                    <md-tooltip>
+                        Hide all
+                    </md-tooltip>
+                    <md-icon>expand_less</md-icon>
+                </md-button>
+            </div>
+        </div>
+    </div>
+    <div ng-repeat="categoryView in ctrl.mutablePlan.categoryViews">
+        <md-toolbar class="md-whiteframe-z2">
+            <div class="md-toolbar-tools">
+                <h2 class="md-title">{{categoryView.category.displayName}}</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="ctrl.toggleCategory(categoryView)">
+                    <md-icon>{{categoryView.expandIcon}}</md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-list class="md-whiteframe-z1" ng-show="categoryView.isOpen">
+            <md-list-item ng-repeat="item in categoryView.category.items"
+                ng-click="ctrl.openAssignDialog($event, item)">
+                <img ng-show="item.assignee" alt="{{ item.assignee.name }}"
+                     ng-src="{{ item.assignee.profileImgSrc }}" class="md-avatar"/>
+                <md-icon ng-hide="item.assignee" class="md-40">person_outline</md-icon>
+                <p>{{ item.displayName }}</p>
+                <md-icon class="row-icon md-primary">person_add</md-icon>
+                <md-icon class="row-icon md-warn" ng-show="item.assignee" ng-click="ctrl.removeAssignment(item, $event)">clear</md-icon>
+            </md-list-item>
+        </md-list>
+    </div>
+</div>
