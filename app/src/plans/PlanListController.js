@@ -28,8 +28,16 @@
   diga.PlanListController.prototype.prepareDatesArray = function() {
     this.dates = [];
     for(var i = 0; i < moment().month(this.selectedMonth).daysInMonth(); i++) {
+      var date = moment().month(this.selectedMonth).date(i + 1);
+      var plan =  this.plans.find(function(plan) {
+        return date.isSame(plan.date, 'day');
+      });
+      if (plan) {
+        plan.encodedId = btoa(plan.$id);
+      }
       this.dates.push({
-        date: moment().month(this.selectedMonth).date(i + 1)
+        date: date,
+        plan: plan
       });
     }
   };
